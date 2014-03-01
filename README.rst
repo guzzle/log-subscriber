@@ -2,45 +2,72 @@
 Guzzle Log Subscriber
 =====================
 
-Logs HTTP requests and responses to a `PSR-3 logger <https://github.com/php-fig/log>`_.
+The LogSubscriber logs HTTP requests and responses to a
+`PSR-3 logger <https://github.com/php-fig/log>`_, callable, resource returned
+by ``fopen()``, or by calling ``echo()``.
 
-Here's a simple example of how it's used:
+Here's the simplest example of how it's used:
 
 .. code-block:: php
 
     use GuzzleHttp\Client;
-    use GuzzleHttp\Subscriber\Log\LogSubscruber;
-    use GuzzleHttp\Subscriber\Log\SimpleLogger;
+    use GuzzleHttp\Subscriber\Log\LogSubscriber;
 
     $client = new Client();
+    $client->getEmitter()->addSubscriber(new LogSubscriber());
+    $client->get('http://httpbin.org');
 
-    // The log subscriber requires a PSR-3 logger. Guzzle provides a very
-    // simple implementation that can be used to log using echo, a fopen()
-    resource, or a callable function.
-    $logger = new SimpleLogger();
+Running the above example will echo a message using the
+`Apache Common Log Format (CLF) <http://httpd.apache.org/docs/1.3/logs.html#common>`_.
 
-    $subscriber = new LogSubscriber($logger);
+::
 
+    [info] hostname Guzzle/4.0 curl/7.21.4 PHP/5.5.7 - [2014-03-01T22:48:13+00:00] "GET / HTTP/1.1" 200 7641
+
+.. note::
+
+    Because no logger is provided, the subscriber simply logs messages with
+    ``echo()``. This is the method used for logging if ``null`` is provided.
+
+Using PSR-Loggers
+-----------------
+
+You can provide a PSR-3 logger to the constructor as well. The following
+example shows how the LogSubscriber can be combined with Monolog.
+
+.. code-block:: php
+
+    use GuzzleHttp\Client;
+    use GuzzleHttp\Subscriber\Log\LogSubscriber;
+    use Monolog\Logger;
+    use Monolog\Handler\StreamHandler;
+
+    // create a log channel
+    $log = new Logger('name');
+    $log->pushHandler(new StreamHandler('/path/to/your.log', Logger::WARNING));
+
+    $client = new Client();
+    $subscriber = new LogSubscriber($log);
     $client->getEmitter()->addSubscriber($subscriber);
 
-If you just want to quickly debug an issue, you can use the static
-``getDebug()`` method of the LogSubscriber.
-
-.. code-block:: php
-
-    $subscriber = LogSubscriber::getDebug();
-    $client->addSubscruber($subscriber);
+Logging with a custom message format
+------------------------------------
 
 The LogSubscriber's constructor accepts a logger as the first argument and a
-message format string or a message formatter as the second argument.
+message format string or a message formatter as the second argument. You could
+log the full HTTP request and Response message using the debug format via
+``GuzzleHttp\Subscriber\Log\Formatter::DEBUG``.
 
 .. code-block:: php
 
-    // Log the full request and response.
-    $subscriber = new LogSubscriber($logger, "{request}\n\n{response}");
+    use GuzzleHttp\Subscriber\Log\LogSubscriber;
+    use GuzzleHttp\Subscriber\Log\Formatter;
+
+    // Log the full request and response messages using echo() calls.
+    $subscriber = new LogSubscriber(null, Formatter::DEBUG);
 
 Message Formatter
------------------
+~~~~~~~~~~~~~~~~~
 
 Included in this repository is a *message formatter*. The message formatter is
 used to format log messages for both requests and responses using a log

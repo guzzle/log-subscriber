@@ -6,8 +6,8 @@ use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 
 /**
- * Formats messages using variable substitutions for requests, responses, and
- * other transactional data.
+ * Formats log messages using variable substitutions for requests, responses,
+ * and other transactional data.
  *
  * The following variable substitutions are supported:
  *
@@ -32,11 +32,12 @@ use GuzzleHttp\Message\ResponseInterface;
  * - {req_body}:     Request body
  * - {res_body}:     Response body
  */
-class MessageFormatter
+class Formatter
 {
-    const DEFAULT_FORMAT = "{hostname} {req_header_User-Agent} - [{ts}] \"{method} {resource} {protocol}/{version}\" {code} {res_header_Content-Length}";
-    const DEBUG_FORMAT = ">>>>>>>>\n{request}\n<<<<<<<<\n{response}\n--------\n{error}";
-    const SHORT_FORMAT = '[{ts}] "{method} {resource} {protocol}/{version}" {code}';
+    /** @var string Apache Common Log Format: http://httpd.apache.org/docs/1.3/logs.html#common */
+    const CLF = "{hostname} {req_header_User-Agent} - [{ts}] \"{method} {resource} {protocol}/{version}\" {code} {res_header_Content-Length}";
+    const DEBUG = ">>>>>>>>\n{request}\n<<<<<<<<\n{response}\n--------\n{error}";
+    const SHORT = '[{ts}] "{method} {resource} {protocol}/{version}" {code}';
 
     /** @var string Template used to format log messages */
     private $template;
@@ -44,9 +45,9 @@ class MessageFormatter
     /**
      * @param string $template Log message template
      */
-    public function __construct($template = self::DEFAULT_FORMAT)
+    public function __construct($template = self::CLF)
     {
-        $this->template = $template ?: self::DEFAULT_FORMAT;
+        $this->template = $template ?: self::CLF;
     }
 
     /**

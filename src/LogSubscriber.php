@@ -21,35 +21,28 @@ class LogSubscriber implements SubscriberInterface
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var MessageFormatter Formatter used to format log messages */
+    /** @var Formatter Formatter used to format log messages */
     private $formatter;
 
     /**
-     * @param LoggerInterface         $logger    Logger used to log messages
-     * @param string|MessageFormatter $formatter Formatter used to format log messages or the formatter template
+     * @param LoggerInterface|callable|resource|null $logger Logger used to log
+     *     messages. Pass a LoggerInterface to use a PSR-3 logger. Pass a
+     *     callable to log messages to a function that accepts a string of
+     *     data. Pass a resource returned from ``fopen()`` to log to an open
+     *     resource. Pass null or leave empty to write log messages using
+     *     ``echo()``.
+     * @param string|Formatter $formatter Formatter used to format log
+     *     messages or a string representing a message formatter template.
      */
-    public function __construct(LoggerInterface $logger, $formatter = null)
+    public function __construct($logger = null, $formatter = null)
     {
-        $this->logger = $logger;
-        $this->formatter = $formatter instanceof MessageFormatter
-            ? $formatter
-            : new MessageFormatter($formatter);
-    }
+        $this->logger = $logger instanceof LoggerInterface
+            ? $logger
+            : new SimpleLogger($logger);
 
-    /**
-     * Get a log plugin that outputs full request, response, and any error
-     * messages.
-     *
-     * @param resource $stream Stream to write to when logging. Defaults to STDOUT
-     *
-     * @return self
-     */
-    public static function getDebugPlugin($stream = null)
-    {
-        return new self(
-            new SimpleLogger($stream),
-            "# Request:\n{request}\n# Response:\n{response}\n{error}"
-        );
+        $this->formatter = $formatter instanceof Formatter
+            ? $formatter
+            : new Formatter($formatter);
     }
 
     public static function getSubscribedEvents()
@@ -60,33 +53,32 @@ class LogSubscriber implements SubscriberInterface
         ];
     }
 
-    /**
-     * @param CompleteEvent $event
-     */
     public function onRequestAfterSend(CompleteEvent $event)
     {
         $this->logger->log(
             substr($event->getResponse()->getStatusCode(), 0, 1) == '2'
                 ? LogLevel::INFO
                 : LogLevel::WARNING,
-            $this->formatter->format($event->getRequest(), $event->getResponse()),
-            [
+            $this->formatter->format(
+                $event->getRequest(),
+                $event->getResponse()
+            ), [
                 'request' => $event->getRequest(),
                 'response' => $event->getResponse()
             ]
         );
     }
 
-    /**
-     * @param ErrorEvent $event
-     */
     public function onRequestError(ErrorEvent $event)
     {
         $ex = $event->getException();
         $this->logger->log(
             LogLevel::CRITICAL,
-            $this->formatter->format($event->getRequest(), $event->getResponse(), $ex),
-            [
+            $this->formatter->format(
+                $event->getRequest(),
+                $event->getResponse(),
+                $ex
+            ), [
                 'request' => $event->getRequest(),
                 'response' => $event->getResponse(),
                 'exception' => $ex

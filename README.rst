@@ -29,11 +29,12 @@ Running the above example will echo a message using the
     Because no logger is provided, the subscriber simply logs messages with
     ``echo()``. This is the method used for logging if ``null`` is provided.
 
-Using PSR-Loggers
------------------
+Using PSR-3 Loggers
+-------------------
 
 You can provide a PSR-3 logger to the constructor as well. The following
-example shows how the LogSubscriber can be combined with Monolog.
+example shows how the LogSubscriber can be combined with
+`Monolog <https://github.com/Seldaek/monolog>`_.
 
 .. code-block:: php
 

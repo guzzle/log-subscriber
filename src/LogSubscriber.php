@@ -48,12 +48,12 @@ class LogSubscriber implements SubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            'complete' => ['onRequestAfterSend', -9999],
-            'error'    => ['onRequestError', 9999]
+            'complete' => ['onComplete', -9999],
+            'error'    => ['onError', 9999]
         ];
     }
 
-    public function onRequestAfterSend(CompleteEvent $event)
+    public function onComplete(CompleteEvent $event)
     {
         $this->logger->log(
             substr($event->getResponse()->getStatusCode(), 0, 1) == '2'
@@ -69,7 +69,7 @@ class LogSubscriber implements SubscriberInterface
         );
     }
 
-    public function onRequestError(ErrorEvent $event)
+    public function onError(ErrorEvent $event)
     {
         $ex = $event->getException();
         $this->logger->log(

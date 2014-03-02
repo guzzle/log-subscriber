@@ -2,6 +2,7 @@
 
 namespace GuzzleHttp\Subscriber\Log;
 
+use GuzzleHttp\Message\MessageInterface;
 use GuzzleHttp\Message\RequestInterface;
 use GuzzleHttp\Message\ResponseInterface;
 
@@ -72,7 +73,7 @@ class Formatter
             '/{\s*([A-Za-z_\-\.0-9]+)\s*}/',
             function (array $matches) use ($request, $response, $error, &$cache) {
 
-                if (array_key_exists($matches[1], $cache)) {
+                if (isset($cache[$matches[1]])) {
                     return $cache[$matches[1]];
                 }
 
@@ -88,21 +89,23 @@ class Formatter
                         $result = trim($request->getMethod() . ' '
                             . $request->getResource()) . ' HTTP/'
                             . $request->getProtocolVersion() . "\r\n"
-                            . $request->getHeaders();
+                            . $this->headers($request);
                         break;
                     case 'res_headers':
-                        $result = sprintf(
+                        $result = $response ?
+                            sprintf(
                                 'HTTP/%s %d %s',
                                 $response->getProtocolVersion(),
                                 $response->getStatusCode(),
                                 $response->getReasonPhrase()
-                            ) . "\r\n" . $response->getHeaders();
+                            ) . "\r\n" . $this->headers($response)
+                            : 'NULL';
                         break;
                     case 'req_body':
                         $result = $request->getBody();
                         break;
                     case 'res_body':
-                        $result = $response ? $response->getBody() : '';
+                        $result = $response ? $response->getBody() : 'NULL';
                         break;
                     case 'ts':
                         $result = gmdate('c');
@@ -116,11 +119,11 @@ class Formatter
                     case 'resource':
                         $result = $request->getResource();
                         break;
-                    case 'protocol':
-                        $result = 'HTTP';
-                        break;
-                    case 'version':
+                    case 'req_version':
                         $result = $request->getProtocolVersion();
+                        break;
+                    case 'res_version':
+                        $result = $response ? $response->getProtocolVersion() : 'NULL';
                         break;
                     case 'host':
                         $result = $request->getHost();
@@ -138,10 +141,13 @@ class Formatter
                         $result = $error ? $error->getMessage() : 'NULL';
                         break;
                     default:
+                        // handle prefixed dynamic headers
                         if (strpos($matches[1], 'req_header_') === 0) {
                             $result = $request->getHeader(substr($matches[1], 11));
-                        } elseif ($response && strpos($matches[1], 'res_header_') === 0) {
-                            $result = $response->getHeader(substr($matches[1], 11));
+                        } elseif (strpos($matches[1], 'res_header_') === 0) {
+                            $result = $response
+                                ? $response->getHeader(substr($matches[1], 11))
+                                : 'NULL';
                         }
                 }
 
@@ -150,5 +156,15 @@ class Formatter
             },
             $this->template
         );
+    }
+
+    private function headers(MessageInterface $message)
+    {
+        $result = '';
+        foreach ($message->getHeaders() as $name => $values) {
+            $result .= $name . ': ' . implode(', ', $values) . "\r\n";
+        }
+
+        return trim($result);
     }
 }

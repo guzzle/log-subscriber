@@ -6,13 +6,13 @@ use Psr\Log\LoggerTrait;
 use Psr\Log\LoggerInterface;
 
 /**
- * Simple logger implementation that can write to a function or resource
+ * Simple logger implementation that can write to a function, resource, or
+ * uses echo() if nothing is provided.
  */
 class SimpleLogger implements LoggerInterface
 {
     use LoggerTrait;
 
-    /** @var mixed Where data is written */
     private $writeTo;
 
     public function __construct($writeTo = null)

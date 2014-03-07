@@ -52,8 +52,8 @@ class LogSubscriberTest extends \PHPUnit_Framework_TestCase
         $resource = fopen('php://temp', 'r+');
         $logger = new LogSubscriber($resource, '{code}');
         $client = new Client();
-        $client->getEmitter()->addSubscriber($logger);
-        $client->getEmitter()->addSubscriber(new Mock([new Response(200)]));
+        $client->getEmitter()->attach($logger);
+        $client->getEmitter()->attach(new Mock([new Response(200)]));
         $client->get('http://httbin.org/get');
         rewind($resource);
         $this->assertEquals("[info] 200\n", stream_get_contents($resource));
@@ -65,8 +65,8 @@ class LogSubscriberTest extends \PHPUnit_Framework_TestCase
         $resource = fopen('php://temp', 'r+');
         $logger = new LogSubscriber($resource, '{code}');
         $client = new Client();
-        $client->getEmitter()->addSubscriber($logger);
-        $client->getEmitter()->addSubscriber(new Mock([new Response(500)]));
+        $client->getEmitter()->attach($logger);
+        $client->getEmitter()->attach(new Mock([new Response(500)]));
         try {
             $client->get('http://httbin.org/get');
         } catch (\Exception $e) {}

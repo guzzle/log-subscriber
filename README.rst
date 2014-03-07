@@ -14,7 +14,7 @@ Here's the simplest example of how it's used:
     use GuzzleHttp\Subscriber\Log\LogSubscriber;
 
     $client = new Client();
-    $client->getEmitter()->addSubscriber(new LogSubscriber());
+    $client->getEmitter()->attach(new LogSubscriber());
     $client->get('http://httpbin.org');
 
 Running the above example will echo a message using the
@@ -49,7 +49,7 @@ example shows how the LogSubscriber can be combined with
 
     $client = new Client();
     $subscriber = new LogSubscriber($log);
-    $client->getEmitter()->addSubscriber($subscriber);
+    $client->getEmitter()->attach($subscriber);
 
 Logging with a custom message format
 ------------------------------------

@@ -45,7 +45,7 @@ class LogSubscriber implements SubscriberInterface
             : new Formatter($formatter);
     }
 
-    public static function getSubscribedEvents()
+    public function getEvents()
     {
         return [
             'complete' => ['onComplete', -9999],

@@ -51,8 +51,8 @@ class FormatterTest extends \PHPUnit_Framework_TestCase
             ['{request} {response}', [$request, $response], $request . ' ' . $response],
             // Empty response yields no value
             ['{request} {response}', [$request], $request . ' '],
-            ['{req_headers}', [$request], "PUT / HTTP/1.1\r\nContent-Length: 3\r\nx-test: abc"],
-            ['{res_headers}', [$request, $response], "HTTP/1.1 200 OK\r\nX-Baz: Bar\r\nContent-Length: 3"],
+            ['{req_headers}', [$request], "PUT / HTTP/1.1\r\nx-test: abc"],
+            ['{res_headers}', [$request, $response], "HTTP/1.1 200 OK\r\nX-Baz: Bar"],
             ['{res_headers}', [$request], 'NULL'],
             ['{req_body}', [$request], 'foo'],
             ['{res_body}', [$request, $response], 'baz'],

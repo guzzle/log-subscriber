@@ -2,6 +2,7 @@
 
 namespace GuzzleHttp\Subscriber\Log;
 
+use GuzzleHttp\Event\RequestEvents;
 use GuzzleHttp\Event\SubscriberInterface;
 use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\ErrorEvent;
@@ -48,8 +49,9 @@ class LogSubscriber implements SubscriberInterface
     public function getEvents()
     {
         return [
-            'complete' => ['onComplete', -9999],
-            'error'    => ['onError', 9999]
+            // Fire after responses are verified (which trigger error events).
+            'complete' => ['onComplete', RequestEvents::VERIFY_RESPONSE - 10],
+            'error'    => ['onError', RequestEvents::EARLY]
         ];
     }
 

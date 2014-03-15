@@ -29,6 +29,20 @@ Running the above example will echo a message using the
     Because no logger is provided, the subscriber simply logs messages with
     ``echo()``. This is the method used for logging if ``null`` is provided.
 
+Installing
+----------
+
+This project can be installed using Composer. Add the following to your
+composer.json:
+
+.. code-block:: javascript
+
+    {
+        "require": {
+            "guzzlehttp/log-subscriber": "0.1.0"
+        }
+    }
+
 Using PSR-3 Loggers
 -------------------
 

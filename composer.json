@@ -21,5 +21,6 @@
     },
     "autoload": {
         "psr-4": { "GuzzleHttp\\Subscriber\\Log\\": "src/" }
-    }
+    },
+    "minimum-stability": "dev"
 }

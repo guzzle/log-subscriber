@@ -39,7 +39,7 @@ composer.json:
 
     {
         "require": {
-            "guzzlehttp/log-subscriber": "1.*"
+            "guzzlehttp/log-subscriber": "~1.0"
         }
     }
 

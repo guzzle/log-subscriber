@@ -1,5 +1,4 @@
 <?php
-
 namespace GuzzleHttp\Tests\Subscriber\LogSubscriber;
 
 use GuzzleHttp\Exception\RequestException;

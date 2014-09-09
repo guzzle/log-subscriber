@@ -1,5 +1,4 @@
 <?php
-
 namespace GuzzleHttp\Subscriber\Log;
 
 use GuzzleHttp\Message\MessageInterface;
@@ -35,7 +34,11 @@ use GuzzleHttp\Message\ResponseInterface;
  */
 class Formatter
 {
-    /** @var string Apache Common Log Format: http://httpd.apache.org/docs/1.3/logs.html#common */
+    /**
+     * Apache Common Log Format.
+     * @link http://httpd.apache.org/docs/1.3/logs.html#common
+     * @var string
+     */
     const CLF = "{hostname} {req_header_User-Agent} - [{ts}] \"{method} {resource} {protocol}/{version}\" {code} {res_header_Content-Length}";
     const DEBUG = ">>>>>>>>\n{request}\n<<<<<<<<\n{response}\n--------\n{error}";
     const SHORT = '[{ts}] "{method} {resource} {protocol}/{version}" {code}';
@@ -65,7 +68,7 @@ class Formatter
         RequestInterface $request,
         ResponseInterface $response = null,
         \Exception $error = null,
-        array $customData = array()
+        array $customData = []
     ) {
         $cache = $customData;
 
@@ -123,7 +126,9 @@ class Formatter
                         $result = $request->getProtocolVersion();
                         break;
                     case 'res_version':
-                        $result = $response ? $response->getProtocolVersion() : 'NULL';
+                        $result = $response
+                            ? $response->getProtocolVersion()
+                            : 'NULL';
                         break;
                     case 'host':
                         $result = $request->getHost();
@@ -132,10 +137,14 @@ class Formatter
                         $result = gethostname();
                         break;
                     case 'code':
-                        $result = $response ? $response->getStatusCode() : 'NULL';
+                        $result = $response
+                            ? $response->getStatusCode()
+                            : 'NULL';
                         break;
                     case 'phrase':
-                        $result = $response ? $response->getReasonPhrase() : 'NULL';
+                        $result = $response
+                            ? $response->getReasonPhrase()
+                            : 'NULL';
                         break;
                     case 'error':
                         $result = $error ? $error->getMessage() : 'NULL';

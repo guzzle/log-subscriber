@@ -1,5 +1,4 @@
 <?php
-
 namespace GuzzleHttp\Subscriber\Log;
 
 use GuzzleHttp\Event\RequestEvents;

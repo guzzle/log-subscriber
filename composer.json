@@ -13,7 +13,7 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "guzzlehttp/guzzle": "~4.0",
+        "guzzlehttp/guzzle": ">=4,<6",
         "psr/log": "~1.0"
     },
     "require-dev": {

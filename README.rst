@@ -22,7 +22,7 @@ Running the above example will echo a message using the
 
 ::
 
-    [info] hostname Guzzle/4.0 curl/7.21.4 PHP/5.5.7 - [2014-03-01T22:48:13+00:00] "GET / HTTP/1.1" 200 7641
+    [info] hostname Guzzle/5.0 curl/7.21.4 PHP/5.5.7 - [2014-03-01T22:48:13+00:00] "GET / HTTP/1.1" 200 7641
 
 .. note::
 

@@ -12,9 +12,9 @@ class SimpleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         $resource = fopen('php://temp', 'r+');
         $logger = new SimpleLogger($resource);
-        $logger->log('WARN', 'Test');
+        $logger->log('WARN', 'Test {key}', array('key' => 'value'));
         rewind($resource);
-        $this->assertEquals("[WARN] Test\n", stream_get_contents($resource));
+        $this->assertEquals("[WARN] Test value\n", stream_get_contents($resource));
         fclose($resource);
     }
 
@@ -22,11 +22,11 @@ class SimpleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         $called = false;
         $c = function ($message) use (&$called) {
-            $this->assertEquals("[WARN] Test\n", $message);
+            $this->assertEquals("[WARN] Test value\n", $message);
             $called = true;
         };
         $logger = new SimpleLogger($c);
-        $logger->log('WARN', 'Test');
+        $logger->log('WARN', 'Test {key}', array('key' => 'value'));
         $this->assertTrue($called);
     }
 
@@ -34,8 +34,8 @@ class SimpleLoggerTest extends \PHPUnit_Framework_TestCase
     {
         ob_start();
         $logger = new SimpleLogger();
-        $logger->log('WARN', 'Test');
+        $logger->log('WARN', 'Test {key}', array('key' => 'value'));
         $result = ob_get_clean();
-        $this->assertEquals("[WARN] Test\n", $result);
+        $this->assertEquals("[WARN] Test value\n", $result);
     }
 }

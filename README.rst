@@ -1,5 +1,5 @@
 =====================
-Guzzle5 Log Subscriber
+Whats new?
 =====================
 It works with Streams (bugfixed)
 

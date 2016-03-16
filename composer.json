@@ -1,5 +1,5 @@
 {
-    "name": "guzzlehttp/log-subscriber",
+    "name": "hrodic/guzzle5-log-subscriber",
     "description": "Logs HTTP requests and responses as they are sent over the wire (Guzzle 4+)",
     "homepage": "http://guzzlephp.org/",
     "keywords": ["plugin", "log", "guzzle"],

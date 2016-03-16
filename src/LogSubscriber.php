@@ -7,6 +7,8 @@ use GuzzleHttp\Event\CompleteEvent;
 use GuzzleHttp\Event\ErrorEvent;
 use Psr\Log\LoggerInterface;
 use Psr\Log\LogLevel;
+use GuzzleHttp\Message\ResponseInterface;
+use GuzzleHttp\Stream\StreamInterface;
 
 /**
  * Plugin class that will add request and response logging to an HTTP request.
@@ -54,6 +56,10 @@ class LogSubscriber implements SubscriberInterface
         ];
     }
 
+	/**
+	 * 
+	 * @param CompleteEvent $event
+	 */
     public function onComplete(CompleteEvent $event)
     {
         $this->logger->log(
@@ -68,8 +74,13 @@ class LogSubscriber implements SubscriberInterface
                 'response' => $event->getResponse()
             ]
         );
+		$this->rewindResponse($event->getResponse());
     }
 
+	/**
+	 * 
+	 * @param ErrorEvent $event
+	 */
     public function onError(ErrorEvent $event)
     {
         $ex = $event->getException();
@@ -85,5 +96,17 @@ class LogSubscriber implements SubscriberInterface
                 'exception' => $ex
             ]
         );
+		$this->rewindResponse($event->getResponse());
     }
+	
+	/**
+	 * 
+	 * @param ResponseInterface $response
+	 */
+	protected function rewindResponse(ResponseInterface $response) {
+		if($response->getBody() instanceof StreamInterface)
+		{
+			$response->getBody()->seek(0);
+		}
+	}
 }

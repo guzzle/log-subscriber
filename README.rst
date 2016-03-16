@@ -1,4 +1,9 @@
 =====================
+Guzzle5 Log Subscriber
+=====================
+It works with Streams (bugfixed)
+
+=====================
 Guzzle Log Subscriber
 =====================
 

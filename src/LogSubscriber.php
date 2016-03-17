@@ -103,8 +103,8 @@ class LogSubscriber implements SubscriberInterface
 	 * 
 	 * @param ResponseInterface $response
 	 */
-	protected function rewindResponse(ResponseInterface $response) {
-		if($response->getBody() instanceof StreamInterface)
+	protected function rewindResponse(ResponseInterface $response = null) {
+		if($response instanceof ResponseInterface && $response->getBody() instanceof StreamInterface)
 		{
 			$response->getBody()->seek(0);
 		}

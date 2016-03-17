@@ -1,4 +1,9 @@
 =====================
+Whats new?
+=====================
+It works with Streams (bugfixed)
+
+=====================
 Guzzle Log Subscriber
 =====================
 

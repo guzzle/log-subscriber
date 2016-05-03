@@ -73,8 +73,11 @@ class LogSubscriber implements SubscriberInterface
     public function onError(ErrorEvent $event)
     {
         $ex = $event->getException();
+
         $this->logger->log(
-            LogLevel::CRITICAL,
+            substr($ex->getCode(), 0, 1) == '4'
+                ? LogLevel::ERROR
+                : LogLevel::CRITICAL,
             $this->formatter->format(
                 $event->getRequest(),
                 $event->getResponse(),
